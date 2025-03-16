@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Prediction</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>House Price Prediction</h1>
+        <form id="predictionForm">
+            <label>Size (sq ft):</label>
+            <input type="text" id="size" required>
+
+            <label>Bedrooms:</label>
+            <input type="text" id="bedrooms" required>
+
+            <label>Bathrooms:</label>
+            <input type="text" id="bathrooms" required>
+
+            <button type="button" onclick="predictPrice()">Predict Price</button>
+        </form>
+
+        <div id="predictionResult" class="prediction-result"></div>
+    </div>
+
+    <script>
+        function predictPrice() {
+            let size = document.getElementById("size").value;
+            let bedrooms = document.getElementById("bedrooms").value;
+            let bathrooms = document.getElementById("bathrooms").value;
+
+            fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    size: size,
+                    bedrooms: bedrooms,
+                    bathrooms: bathrooms
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("predictionResult").innerText = 
+                    "Estimated Price: $" + data.price;
+            })
+            .catch(error => {
+                document.getElementById("predictionResult").innerText = 
+                    "Error in prediction!";
+            });
+        }
+    </script>
+
+</body>
+</html>
